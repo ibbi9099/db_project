@@ -1,0 +1,97 @@
+.main-layout {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #f3f4f6;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px 0;
+}
+
+/* Logo Styles */
+.app-logo {
+  font-family: 'Poppins', sans-serif; /* Same font as used in the login page */
+  font-weight: 700; /* Bold */
+  font-size: 2rem; /* Adjusted size for the layout */
+  color: #093a25; /* Deep green */
+  text-align: center;
+  margin: 0;
+}
+
+.logo hr {
+  border: 0.5px solid #093a25;
+}
+
+.menu-item {
+  padding: 10px 20px;
+  margin: 5px 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.menu-item i {
+  margin-right: 10px;
+}
+
+.menu-item.active {
+  background-color: green;
+  color: white;
+}
+
+.menu-item:hover {
+  background-color: green;
+  color: white;
+}
+
+.menu-item a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  background-color: #093a25;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+}
+
+.header-content i {
+  margin-right: 15px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.header-content a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
+/* Body Section */
+.body {
+  padding: 20px;
+  background-color: #e8f5e9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+}
