@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import { Table, message, Button } from "antd";
+import { Table, message } from "antd";
 import axios from "axios";
 
 const MyCases = () => {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch cases added by the logged-in lawyer
   const fetchMyCases = async () => {
     setLoading(true);
     try {
@@ -16,6 +15,8 @@ const MyCases = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+
+      console.log("Cases response from backend:", res.data.data); // Debug the response
 
       if (res.data.success) {
         setCases(res.data.data);
@@ -30,31 +31,35 @@ const MyCases = () => {
     }
   };
 
-  useEffect(() => {
-    fetchMyCases();
-  }, []);
-
-  const handleDownload = async (fileId, fileName) => {
+  // Directly open the file in a new tab
+  const handleOpenFile = async (caseId) => {
+    if (!caseId) {
+      message.error("Case ID is missing");
+      console.error("Error: Case ID is undefined or null");
+      return;
+    }
+  
     try {
-      const res = await axios.get(`/api/files/download/${fileId}`, {
-        responseType: "blob", // Ensures the response is treated as a file
+      // Directly request the file
+      const res = await axios.get(`/api/files/download/case/${caseId}`, {
+        responseType: "blob", // Expect binary data
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", fileName); // Set the filename
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+  
+      // Create a blob URL for the PDF and open it in a new tab
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
     } catch (error) {
-      console.error("Error downloading file:", error);
-      message.error("Failed to download the file.");
+      console.error("Error opening file:", error.message);
+      message.error("Something went wrong while opening the file.");
     }
   };
-  
+  useEffect(() => {
+    fetchMyCases();
+  }, []);
 
   const columns = [
     {
@@ -78,24 +83,20 @@ const MyCases = () => {
       key: "dateAdded",
     },
     {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => {
-        return record.FILEID ? (
-          <a
-            href={`/api/files/download/${record.FILEID}`}
-            target="_blank"
-            rel="noopener noreferrer"
+        title: "Actions",
+        key: "actions",
+        render: (_, record) => (
+          <button
+            className="open-file-button"
+            onClick={() => handleOpenFile(record.CASEID)}
           >
-            View File
-          </a>
-        ) : (
-          "No File Available"
-        );
+            Open File
+          </button>
+        ),
       },
-    },
   ];
   
+
   return (
     <Layout>
       <h1 className="text-center">My Cases</h1>
@@ -103,7 +104,7 @@ const MyCases = () => {
         dataSource={cases}
         columns={columns}
         loading={loading}
-        rowKey="CaseID"
+        rowKey="CASEID"
       />
     </Layout>
   );

@@ -10,7 +10,7 @@ import Bookmark from './pages/bookmark';
 import CaseDetails from './pages/caseDetails';
 import EditCase from './pages/editCase';
 import Error404 from './pages/error404';
-import SearchResults from './pages/searchResults';
+import SearchCases from './pages/SearchCases'; // Match the exact file name
 import { useSelector } from 'react-redux';
 import Spinner from './components/Spinner';
 import ProtectedRoute from './components/ProtectedRoutes';
@@ -81,14 +81,17 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* Search Cases Route */}
             <Route
-              path="/search"
+              path="/search-cases" // Updated to match the intended route
               element={
                 <ProtectedRoute>
-                  <SearchResults />
+                  <SearchCases />
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/request-case"
               element={
@@ -118,7 +121,7 @@ function App() {
               }
             />
 
-            {/* Add Case Route without :id */}
+            {/* Add Case Route */}
             <Route
               path="/add-case"
               element={

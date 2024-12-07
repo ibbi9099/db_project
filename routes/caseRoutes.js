@@ -3,6 +3,8 @@ const { addCase } = require("../controllers/caseController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const multer = require("multer");
 const { getMyCases } = require("../controllers/caseController");
+const { getDistinctCategories, searchCasesByCategory } = require("../controllers/caseController");
+const { getCaseById } = require("../controllers/caseController");
 
 
 // Initialize Multer for file uploads
@@ -14,5 +16,8 @@ const router = express.Router();
 router.post("/add", authMiddleware, upload.single("file"), addCase);
 router.get("/my-cases", authMiddleware, getMyCases);
 
+router.get("/categories", authMiddleware, getDistinctCategories);
+router.get("/search", authMiddleware, searchCasesByCategory);
+router.get("/:id", authMiddleware, getCaseById);
 
 module.exports = router;

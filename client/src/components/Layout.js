@@ -65,17 +65,18 @@ const Layout = ({ children }) => {
 
           {/* Add "My Cases" Button for Lawyers */}
           {user?.userType === "Lawyer" && (
-            <>
-              <div className="menu-item">
-                <i className="fa-solid fa-folder-open"></i>
-                <Link to="/my-cases">My Cases</Link>
-              </div>
-              <div className="menu-item">
-                <i className="fa-solid fa-plus"></i>
-                <Link to="/add-case">Add Case</Link>
-              </div>
-            </>
-          )}
+  <>
+    {/* <div className="menu-item">
+      <i className="fa-solid fa-folder-open"></i>
+      <Link to="/my-cases">My Cases</Link>
+    </div> */}
+    {/* <div className="menu-item">
+      <i className="fa-solid fa-plus"></i>
+      <Link to="/add-case">Add Case</Link>
+    </div> */}
+  </>
+)}
+
 
           <div className="menu-item" onClick={handleLogout}>
             <i className="fa-solid fa-right-from-bracket"></i>

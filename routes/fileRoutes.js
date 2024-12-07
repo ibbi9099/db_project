@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const { uploadFile } = require("../controllers/fileController");
-const { downloadFile } = require("../controllers/fileController");
+const { downloadFileByCaseId } = require("../controllers/fileController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
@@ -12,6 +12,5 @@ const upload = multer({ storage });
 
 // Route for uploading files
 router.post("/upload", upload.single("file"), uploadFile);
-router.get("/download/:fileId", authMiddleware, downloadFile);
-
+router.get("/download/case/:caseId", authMiddleware, downloadFileByCaseId);
 module.exports = router;
