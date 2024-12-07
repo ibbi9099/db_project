@@ -16,9 +16,11 @@ import Spinner from './components/Spinner';
 import ProtectedRoute from './components/ProtectedRoutes';
 import PublicRoute from './components/PublicRoutes';
 import RequestCase from './pages/requestCase';
+import MyCases from './pages/MyCases'; // Import MyCases component
 
 function App() {
-  const { loading } = useSelector(state => state.alerts)
+  const { loading } = useSelector((state) => state.alerts);
+
   return (
     <>
       <BrowserRouter>
@@ -26,28 +28,33 @@ function App() {
           <Spinner />
         ) : (
           <Routes>
-
             {/* Public Routes */}
-            <Route path="/"
+            <Route
+              path="/"
               element={
                 <ProtectedRoute>
                   <HomePage />
                 </ProtectedRoute>
-              } />
+              }
+            />
 
-            <Route path="/login"
+            <Route
+              path="/login"
               element={
                 <PublicRoute>
                   <Login />
                 </PublicRoute>
-              } />
+              }
+            />
 
-            <Route path="/register"
+            <Route
+              path="/register"
               element={
                 <PublicRoute>
                   <Register />
                 </PublicRoute>
-              } />
+              }
+            />
 
             {/* User-Specific Routes */}
             <Route
@@ -89,8 +96,19 @@ function App() {
                   <RequestCase />
                 </ProtectedRoute>
               }
-              />
-              {/* Admin-Specific Routes */}
+            />
+
+            {/* Lawyer-Specific Route */}
+            <Route
+              path="/my-cases"
+              element={
+                <ProtectedRoute>
+                  <MyCases />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin-Specific Routes */}
             <Route
               path="/admin"
               element={
@@ -99,14 +117,17 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* Add Case Route without :id */}
             <Route
-              path="/add-case/:id"
+              path="/add-case"
               element={
                 <ProtectedRoute>
                   <AddCase />
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/edit-case/:id"
               element={
@@ -120,8 +141,6 @@ function App() {
             <Route path="*" element={<Error404 />} />
           </Routes>
         )}
-
-
       </BrowserRouter>
     </>
   );

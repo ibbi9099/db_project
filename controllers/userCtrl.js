@@ -1,6 +1,6 @@
-const userModel = require('../models/userModel');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
+const userModel = require("../models/userModel");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // Register Controller
 const registerController = async (req, res) => {
@@ -10,9 +10,7 @@ const registerController = async (req, res) => {
         // Check if user already exists
         const existingUser = await userModel.getUserByEmail(email);
         if (existingUser) {
-            return res
-                .status(200)
-                .send({ message: 'User already exists', success: false });
+            return res.status(400).json({ message: "User already exists", success: false });
         }
 
         // Hash password
@@ -20,135 +18,128 @@ const registerController = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Set default userType if not provided
-        const defaultUserType = 'LawStudent'; // Default value for userType
-        const validUserTypes = ['Lawyer', 'LawStudent', 'Admin'];
+        const defaultUserType = "LawStudent";
+        const validUserTypes = ["Lawyer", "LawStudent", "Admin"];
         const finalUserType = userType && validUserTypes.includes(userType) ? userType : defaultUserType;
 
         // Create a new user
         const newUserId = await userModel.createUser(name, email, hashedPassword, finalUserType);
 
         // Add specialization and experience for Lawyer
-        if (finalUserType === 'Lawyer') {
-            // Validate specialization and experience
-            if (!specialization || specialization.trim() === '') {
-                return res.status(400).send({
+        if (finalUserType === "Lawyer") {
+            if (!specialization || specialization.trim() === "") {
+                return res.status(400).json({
                     success: false,
-                    message: 'Specialization is required for Lawyers',
+                    message: "Specialization is required for Lawyers",
                 });
             }
 
             if (!experienceYears || isNaN(experienceYears) || experienceYears < 0) {
-                return res.status(400).send({
+                return res.status(400).json({
                     success: false,
-                    message: 'Valid experience years are required for Lawyers',
+                    message: "Valid experience years are required for Lawyers",
                 });
             }
 
-            // Add lawyer-specific data
             await userModel.createLawyer(newUserId, specialization, experienceYears);
         }
 
         // Add educational institute for LawStudent
-        if (finalUserType === 'LawStudent') {
-            // Validate educational institute
-            if (!educationalInstitute || educationalInstitute.trim() === '') {
-                return res.status(400).send({
+        if (finalUserType === "LawStudent") {
+            if (!educationalInstitute || educationalInstitute.trim() === "") {
+                return res.status(400).json({
                     success: false,
-                    message: 'Educational institute is required for Law Students',
+                    message: "Educational institute is required for Law Students",
                 });
             }
 
-            // Add law student-specific data
             await userModel.createLawStudent(newUserId, educationalInstitute);
         }
 
-        res.status(201).send({ message: 'Registered successfully', success: true });
+        res.status(201).json({ message: "Registered successfully", success: true });
     } catch (error) {
-        console.error('Error in registerController:', error.message);
-        res.status(500).send({
+        console.error("Error in registerController:", error.message);
+        res.status(500).json({
             success: false,
             message: `Register Controller: ${error.message}`,
         });
     }
 };
 
-
 // Login Controller for OracleDB
 const loginController = async (req, res) => {
     try {
-        // Fetch user from the database by email
         const user = await userModel.getUserByEmail(req.body.email);
 
         if (!user) {
-            return res.status(200).send({ message: 'User not found', success: false });
+            return res.status(404).json({ message: "User not found", success: false });
         }
 
-        // Compare the provided password with the hashed password from the database
         const isMatch = await bcrypt.compare(req.body.password, user.PASSWORD);
         if (!isMatch) {
-            return res.status(200).send({ message: 'Invalid Email or Password', success: false });
+            return res.status(401).json({ message: "Invalid Email or Password", success: false });
         }
 
-        // Generate JWT token
         const token = jwt.sign(
-            { id: user.USERID, userType: user.USER_TYPE }, // Include user ID and type in the token
+            { id: user.USERID, userType: user.USER_TYPE },
             process.env.JWT_SECRET,
-            { expiresIn: '1d' } // Set token expiration to 1 day
+            { expiresIn: "1d" }
         );
 
-        // Respond with success message and token
-        res.status(200).send({ message: 'Login Successful', success: true, token });
+        res.status(200).json({
+            success: true,
+            message: "Logged in successfully",
+            token,
+        });
     } catch (error) {
-        console.error('Error in loginController:', error.message);
-        res.status(500).send({ message: 'Error in Login Controller: ${ error.message }', success: false });
+        console.error("Error in loginController:", error.message);
+        res.status(500).json({ message: `Error in Login Controller: ${error.message}`, success: false });
     }
 };
 
+// Auth Controller
 const authController = async (req, res) => {
     try {
-        // Fetch user from the database by userId
-        const user = await userModel.getUserById(req.body.userId);
-        user.password = undefined;
-        if (!user) {
-            return res.status(200).send({
-                message: "User not found",
-                success: false,
-            });
+        const userId = req.user?.id; // Extract userId from JWT
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized access", success: false });
         }
 
-        // Respond with user data
-        res.status(200).send({
+        const user = await userModel.getUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found", success: false });
+        }
+
+        res.status(200).json({
             success: true,
             data: {
-              email: user.EMAIL, // Add the user's unique ID
-              name: user.NAME, // Ensure this matches your OracleDB column names
-              userType: user.USER_TYPE, // Send user type (Lawyer or LawStudent)
+                email: user.EMAIL,
+                name: user.NAME,
+                userType: user.USER_TYPE,
             },
-          });
-          
-          
+        });
     } catch (error) {
         console.error("Error in authController:", error.message);
-        res.status(500).send({ message: 'Error in Login Controller: ${ error.message }', success: false });
+        res.status(500).json({ message: `Error in Auth Controller: ${error.message}`, success: false });
     }
 };
+
+// Lawyers Controller
 const LawyersController = async (req, res) => {
     try {
-        const lawyers = await userModel.getAllLawyers(); // Fetch lawyers from the model
-        res.status(200).send({
+        const lawyers = await userModel.getAllLawyers();
+        res.status(200).json({
             success: true,
             message: "Lawyers fetched successfully",
             data: lawyers,
         });
     } catch (error) {
-        console.error("Error in getAllLawyersController:", error.message);
-        res.status(500).send({
+        console.error("Error in LawyersController:", error.message);
+        res.status(500).json({
             success: false,
             message: `Error fetching lawyers: ${error.message}`,
         });
     }
 };
-
-
 
 module.exports = { loginController, registerController, authController, LawyersController };

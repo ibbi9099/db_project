@@ -1,13 +1,11 @@
 const requestCaseModel = require('../models/requestCaseModel');
 
+// Controller to create a case request
 const createRequestController = async (req, res) => {
   try {
-    const { userId, caseTitle, caseDescription, lawyer, requestedDate } = req.body;
+    const { caseTitle, caseDescription, lawyer, requestedDate } = req.body;
+    const userId = req.user?.id; // Extract the user ID from the JWT
 
-    // Debug request body
-    console.log("Request body:", req.body);
-
-    // Ensure required fields are provided
     if (!userId || !caseTitle || !caseDescription) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
@@ -20,11 +18,15 @@ const createRequestController = async (req, res) => {
   }
 };
 
-
 // Controller to get requests by user ID
 const getUserRequestsController = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.user?.id; // Extract the user ID from the JWT
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "User ID is required" });
+    }
+
     const requests = await requestCaseModel.getRequestsByUserId(userId);
     res.status(200).send({ success: true, data: requests });
   } catch (error) {

@@ -24,5 +24,6 @@ router.post("/getUserData", authMiddleware, authController)
 
 // Route to fetch all registered lawyers
 router.get("/lawyers", LawyersController);
+
     
 module.exports = router;

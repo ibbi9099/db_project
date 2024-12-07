@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -25,28 +26,24 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
+    // Custom validation
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
+      const { confirmPassword, ...payload } = formData;
+      const response = await axios.post("/api/users/register", payload);
 
-      if (data.success) {
+      if (response.data.success) {
         navigate("/login");
       } else {
-        setError(data.message || "Registration failed.");
+        setError(response.data.message || "Registration failed.");
       }
     } catch (error) {
       setError("An error occurred. Please try again later.");
+      console.error(error);
     }
   };
 
@@ -128,90 +125,100 @@ const Register = () => {
           <h3 style={{ textAlign: "center", marginBottom: "20px" }}>Register</h3>
 
           <div style={{ marginBottom: "15px" }}>
-            <label>Name</label>
+            <label>
+              Name <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter your name"
+              required
               style={{
                 width: "100%",
                 padding: "10px",
                 borderRadius: "8px",
                 border: "1px solid #ccc",
               }}
-              required
             />
           </div>
 
           <div style={{ marginBottom: "15px" }}>
-            <label>Email</label>
+            <label>
+              Email <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
+              required
               style={{
                 width: "100%",
                 padding: "10px",
                 borderRadius: "8px",
                 border: "1px solid #ccc",
               }}
-              required
             />
           </div>
 
           <div style={{ marginBottom: "15px" }}>
-            <label>Password</label>
+            <label>
+              Password <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
+              required
               style={{
                 width: "100%",
                 padding: "10px",
                 borderRadius: "8px",
                 border: "1px solid #ccc",
               }}
-              required
             />
           </div>
 
           <div style={{ marginBottom: "15px" }}>
-            <label>Confirm Password</label>
+            <label>
+              Confirm Password <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="Confirm your password"
+              required
               style={{
                 width: "100%",
                 padding: "10px",
                 borderRadius: "8px",
                 border: "1px solid #ccc",
               }}
-              required
             />
           </div>
 
           <div style={{ marginBottom: "15px" }}>
-            <label>Select User Type</label>
+            <label>
+              Select User Type <span style={{ color: "red" }}>*</span>
+            </label>
             <select
               name="userType"
               value={formData.userType}
               onChange={handleChange}
+              required
               style={{
                 width: "100%",
                 padding: "10px",
                 borderRadius: "8px",
                 border: "1px solid #ccc",
               }}
-              required
             >
               <option value="">Select user type</option>
               <option value="Lawyer">Lawyer</option>
@@ -222,38 +229,42 @@ const Register = () => {
           {formData.userType === "Lawyer" && (
             <>
               <div style={{ marginBottom: "15px" }}>
-                <label>Specialization</label>
+                <label>
+                  Specialization <span style={{ color: "red" }}>*</span>
+                </label>
                 <input
                   type="text"
                   name="specialization"
                   value={formData.specialization}
                   onChange={handleChange}
                   placeholder="Enter your specialization"
+                  required
                   style={{
                     width: "100%",
                     padding: "10px",
                     borderRadius: "8px",
                     border: "1px solid #ccc",
                   }}
-                  required
                 />
               </div>
 
               <div style={{ marginBottom: "15px" }}>
-                <label>Years of Experience</label>
+                <label>
+                  Years of Experience <span style={{ color: "red" }}>*</span>
+                </label>
                 <input
                   type="number"
                   name="experienceYears"
                   value={formData.experienceYears}
                   onChange={handleChange}
                   placeholder="Enter years of experience"
+                  required
                   style={{
                     width: "100%",
                     padding: "10px",
                     borderRadius: "8px",
                     border: "1px solid #ccc",
                   }}
-                  required
                 />
               </div>
             </>
@@ -261,20 +272,22 @@ const Register = () => {
 
           {formData.userType === "LawStudent" && (
             <div style={{ marginBottom: "15px" }}>
-              <label>Educational Institute</label>
+              <label>
+                Educational Institute <span style={{ color: "red" }}>*</span>
+              </label>
               <input
                 type="text"
                 name="educationalInstitute"
                 value={formData.educationalInstitute}
                 onChange={handleChange}
                 placeholder="Enter your institute"
+                required
                 style={{
                   width: "100%",
                   padding: "10px",
                   borderRadius: "8px",
                   border: "1px solid #ccc",
                 }}
-                required
               />
             </div>
           )}
@@ -294,7 +307,9 @@ const Register = () => {
                 padding: "10px 20px",
                 border: "none",
                 borderRadius: "8px",
+                cursor: "pointer",
                 fontWeight: "bold",
+                fontSize: "1rem",
               }}
             >
               Register

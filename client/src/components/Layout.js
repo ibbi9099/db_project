@@ -29,7 +29,11 @@ const Layout = ({ children }) => {
   };
 
   const SidebarMenu =
-    user?.userType === "Lawyer" ? lawyerMenu : user?.userType === "LawStudent" ? studentMenu : [];
+    user?.userType === "Lawyer"
+      ? lawyerMenu
+      : user?.userType === "LawStudent"
+      ? studentMenu
+      : [];
 
   if (!SidebarMenu.length) {
     return (
@@ -44,10 +48,10 @@ const Layout = ({ children }) => {
     <div className="main-layout">
       {/* Sidebar */}
       <aside className="sidebar">
-      <div className="logo">
-  <h1 className="app-logo">CaseSphere</h1>
-  <hr />
-</div>
+        <div className="logo">
+          <h1 className="app-logo">CaseSphere</h1>
+          <hr />
+        </div>
         <div className="menu">
           {SidebarMenu.map((menu, index) => {
             const isActive = location.pathname === menu.path;
@@ -58,6 +62,21 @@ const Layout = ({ children }) => {
               </div>
             );
           })}
+
+          {/* Add "My Cases" Button for Lawyers */}
+          {user?.userType === "Lawyer" && (
+            <>
+              <div className="menu-item">
+                <i className="fa-solid fa-folder-open"></i>
+                <Link to="/my-cases">My Cases</Link>
+              </div>
+              <div className="menu-item">
+                <i className="fa-solid fa-plus"></i>
+                <Link to="/add-case">Add Case</Link>
+              </div>
+            </>
+          )}
+
           <div className="menu-item" onClick={handleLogout}>
             <i className="fa-solid fa-right-from-bracket"></i>
             Logout
@@ -74,15 +93,14 @@ const Layout = ({ children }) => {
             <Link to="/profile">{user?.name || "Profile"}</Link>
           </div>
           <h3>
-  {user?.userType === "LawStudent"
-    ? "Student Dashboard"
-    : user?.userType === "Lawyer"
-    ? "Lawyer Dashboard"
-    : user?.userType === "Admin"
-    ? "Admin Dashboard"
-    : "Dashboard"}
-</h3>
-
+            {user?.userType === "LawStudent"
+              ? "Student Dashboard"
+              : user?.userType === "Lawyer"
+              ? "Lawyer Dashboard"
+              : user?.userType === "Admin"
+              ? "Admin Dashboard"
+              : "Dashboard"}
+          </h3>
         </header>
 
         {/* Main Body */}

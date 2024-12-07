@@ -47,7 +47,6 @@ const Login = () => {
         padding: "20px",
       }}
     >
-      {/* Overlay to darken the background for better readability */}
       <div
         style={{
           position: "absolute",
@@ -92,7 +91,7 @@ const Login = () => {
             boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
             backgroundColor: "#fff",
             maxWidth: "400px",
-            opacity: 0.9, // Slight transparency for the form
+            opacity: 0.9,
           }}
         >
           <div style={{ marginBottom: "20px" }}>
@@ -112,6 +111,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
+              autoComplete="email"
               style={{
                 width: "100%",
                 padding: "12px",

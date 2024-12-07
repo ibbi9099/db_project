@@ -3,29 +3,36 @@ require('dotenv').config();
 
 // Import necessary modules
 const express = require('express');
-const connectDB = require('./config/db'); // Import the centralized DB connection
-const oracledb = require('oracledb');
+const connectDB = require('./config/db'); // Centralized DB connection logic
 
 // Initialize Express app
 const app = express();
 app.use(express.json()); // Middleware to parse JSON requests
 
-const port = process.env.PORT || 4001;
+const port = process.env.PORT || 4000;
 
-//Admin
+// Admin routes
 const adminRoutes = require('./routes/adminRoutes');
 console.log('Registering adminRoutes');
 app.use('/api/admin', adminRoutes);
 
-
-//Routes
+// User routes
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
-//request case
+// Request Case routes
 const requestCaseRoutes = require('./routes/requestCaseRoutes');
 app.use('/api/request-case', requestCaseRoutes);
 
+// Case routes
+const caseRoutes = require('./routes/caseRoutes'); 
+console.log('Registering caseRoutes');
+app.use('/api/cases', caseRoutes);
+
+// File routes
+const fileRoutes = require('./routes/fileRoutes');
+console.log('Registering fileRoutes');
+app.use('/api/files', fileRoutes);
 
 // Test database connection when the server starts
 (async () => {
@@ -45,7 +52,7 @@ app.get('/', (req, res) => {
 // Example route to test database connection
 app.get('/test-db', async (req, res) => {
   try {
-    const connection = await connectDB(); // Use centralized DB connection
+    const connection = await connectDB();
     res.send('Database connected successfully!');
     await connection.close();
   } catch (err) {
@@ -54,7 +61,7 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
-// Start server
+// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
