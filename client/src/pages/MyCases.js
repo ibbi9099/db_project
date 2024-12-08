@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import { Table, message } from "antd";
+import { Table, message, Popconfirm } from "antd";
 import axios from "axios";
 
 const MyCases = () => {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Fetch the user's cases
   const fetchMyCases = async () => {
     setLoading(true);
     try {
@@ -15,8 +16,6 @@ const MyCases = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
-      console.log("Cases response from backend:", res.data.data); // Debug the response
 
       if (res.data.success) {
         setCases(res.data.data);
@@ -31,24 +30,21 @@ const MyCases = () => {
     }
   };
 
-  // Directly open the file in a new tab
+  // Handle file opening for a specific case
   const handleOpenFile = async (caseId) => {
     if (!caseId) {
       message.error("Case ID is missing");
-      console.error("Error: Case ID is undefined or null");
       return;
     }
-  
+
     try {
-      // Directly request the file
       const res = await axios.get(`/api/files/download/case/${caseId}`, {
-        responseType: "blob", // Expect binary data
+        responseType: "blob",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-  
-      // Create a blob URL for the PDF and open it in a new tab
+
       const blob = new Blob([res.data], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
@@ -57,10 +53,37 @@ const MyCases = () => {
       message.error("Something went wrong while opening the file.");
     }
   };
+
+  // Handle case deletion
+  const handleDeleteCase = async (caseId) => {
+    setLoading(true); // Set loading state during deletion
+    try {
+      const res = await axios.delete(`/api/cases/${caseId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res.data.success) {
+        message.success("Case deleted successfully");
+        fetchMyCases(); // Refresh the case list
+      } else {
+        message.error(res.data.message || "Failed to delete case");
+      }
+    } catch (error) {
+      console.error("Error deleting case:", error);
+      message.error("Something went wrong");
+    } finally {
+      setLoading(false); // Reset loading state
+    }
+  };
+
+  // Fetch cases on component mount
   useEffect(() => {
     fetchMyCases();
   }, []);
 
+  // Define table columns
   const columns = [
     {
       title: "Title",
@@ -83,19 +106,42 @@ const MyCases = () => {
       key: "dateAdded",
     },
     {
-        title: "Actions",
-        key: "actions",
-        render: (_, record) => (
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <div style={{ display: "flex", gap: "10px" }}>
+          {/* Open File Button */}
           <button
             className="open-file-button"
             onClick={() => handleOpenFile(record.CASEID)}
           >
             Open File
           </button>
-        ),
-      },
+
+          {/* Delete Button */}
+          <Popconfirm
+            title="Are you sure you want to delete this case?"
+            onConfirm={() => handleDeleteCase(record.CASEID)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <button
+              className="delete-case-button"
+              style={{
+                backgroundColor: "red",
+                color: "white",
+                border: "none",
+                padding: "5px 10px",
+                cursor: "pointer",
+              }}
+            >
+              Delete
+            </button>
+          </Popconfirm>
+        </div>
+      ),
+    },
   ];
-  
 
   return (
     <Layout>
@@ -111,3 +157,4 @@ const MyCases = () => {
 };
 
 export default MyCases;
+

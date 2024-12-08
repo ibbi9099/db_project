@@ -63,6 +63,7 @@ app.get('/test-db', async (req, res) => {
 
 const profileRoutes = require("./routes/profileRoutes");
 app.use("/api/profile", profileRoutes);
+app.use("/api/bookmarks", require("./routes/bookmarkRoutes"));
 
 
 

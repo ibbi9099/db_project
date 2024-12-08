@@ -1,7 +1,7 @@
 export const UserMenu = [
   {
-    name: "Dashboard",
-    path: "/dashboard",
+    name: "HomePage",
+    path: "/", // Root path to match the `App.js` route
     icon: "fa-solid fa-gavel", // Icon representing legal/law features
   },
   {
@@ -24,98 +24,65 @@ export const UserMenu = [
     path: "/profile",
     icon: "fa-solid fa-user",
   },
-  // {
-  //   name: "Logout",
-  //   path: "/logout",
-  //   icon: "fa-solid fa-right-from-bracket",
-  // },
 ];
-
-//student menu
 
 export const studentMenu = [
   {
-    name: "Dashboard",
-    path: "/dashboard",
-    icon: "fa-solid fa-gavel", // Icon representing legal/law features
+    name: "HomePage",
+    path: "/", // Root path to match the `App.js` route
+    icon: "fa-solid fa-gavel",
   },
   {
     name: "Search Cases",
     path: "/search-cases",
-    icon: "fa-solid fa-search", // Search case icon
+    icon: "fa-solid fa-search",
   },
-  // {
-  //   name: "Bookmark Cases",
-  //   path: "/bookmark-cases",
-  //   icon: "fa-solid fa-bookmark", // Bookmark icon
-  // },
   {
     name: "Bookmarked Cases",
     path: "/view-bookmarks",
-    icon: "fa-solid fa-bookmark", // View bookmarks icon
+    icon: "fa-solid fa-bookmark",
   },
   {
     name: "Request Case",
     path: "/request-case",
-    icon: "fa-solid fa-envelope", // Request case icon
+    icon: "fa-solid fa-envelope",
   },
   {
     name: "Profile",
     path: "/profile",
-    icon: "fa-solid fa-user", // Profile icon
+    icon: "fa-solid fa-user",
   },
-  {
-    name: "Users",
-    path: "/users",
-    icon: "fa-solid fa-user", // Profile icon
-  },
-  // {
-  //   name: "Logout",
-  //   path: "/logout",
-  //   icon: "fa-solid fa-right-from-bracket",
-  // },
 ];
 
-// lawyer menu
 export const lawyerMenu = [
   {
-    name: "Dashboard",
-    path: "/dashboard",
-    icon: "fa-solid fa-gavel", // Icon representing legal/law features
+    name: "HomePage",
+    path: "/", // Root path to match the `App.js` route
+    icon: "fa-solid fa-gavel",
+  },
+  {
+    name: "Bookmarked Cases",
+    path: "/view-bookmarks",
+    icon: "fa-solid fa-bookmark",
   },
   {
     name: "My Cases",
     path: "/my-cases",
-    icon: "fa-solid fa-folder", // Icon for managing cases
+    icon: "fa-solid fa-folder",
   },
   {
     name: "Add Case",
     path: "/add-case",
-    icon: "fa-solid fa-plus", // Add case icon
-  },
-  {
-    name: "Edit Cases",
-    path: "/edit-cases",
-    icon: "fa-solid fa-pen", // Edit case icon
+    icon: "fa-solid fa-plus",
   },
   {
     name: "Search Cases",
     path: "/search-cases",
-    icon: "fa-solid fa-search", // Search case icon
+    icon: "fa-solid fa-search",
   },
   {
     name: "Profile",
     path: "/profile",
-    icon: "fa-solid fa-user", // Profile icon
+    icon: "fa-solid fa-user",
   },
-  {
-    name: "Users",
-    path: "/users",
-    icon: "fa-solid fa-user", // Profile icon
-  },
-  // {
-  //   name: "Logout",
-  //   path: "/logout",
-  //   icon: "fa-solid fa-right-from-bracket",
-  // },
 ];

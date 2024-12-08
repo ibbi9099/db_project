@@ -181,6 +181,66 @@ const getCaseById = async (req, res) => {
     if (connection) await connection.close();
   }
 };
+const deleteCase = async (req, res) => {
+  const { id } = req.params;
+
+  let connection;
+  try {
+    connection = await connectDB();
+
+    // Check if the case exists
+    const caseExists = await connection.execute(
+      'SELECT CaseID FROM Cases WHERE CaseID = :id',
+      { id },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+
+    if (!caseExists.rows.length) {
+      return res.status(404).json({
+        success: false,
+        message: "Case not found",
+      });
+    }
+
+    // Delete related files first (if applicable)
+    await connection.execute(
+      'DELETE FROM Files WHERE CaseID = :id',
+      { id },
+      { autoCommit: false }
+    );
+
+    // Delete the case
+    await connection.execute(
+      'DELETE FROM Cases WHERE CaseID = :id',
+      { id },
+      { autoCommit: false }
+    );
+
+    await connection.commit();
+
+    res.status(200).json({
+      success: true,
+      message: "Case deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting case:", error);
+
+    if (connection) {
+      await connection.rollback();
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Error deleting the case",
+    });
+  } finally {
+    if (connection) {
+      await connection.close();
+    }
+  }
+};
+
+
 
 module.exports = {
   
@@ -188,5 +248,6 @@ module.exports = {
   getMyCases,
   getDistinctCategories,
   searchCasesByCategory,
-  getCaseById
+  getCaseById,
+  deleteCase
 };

@@ -7,6 +7,7 @@ import Layout from "../components/Layout";
 const CaseDetails = () => {
   const { id } = useParams();
   const [caseData, setCaseData] = useState(null);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +20,7 @@ const CaseDetails = () => {
         });
         if (res.data.success) {
           setCaseData(res.data.data);
+          checkBookmark(); // Check if the case is bookmarked
         } else {
           message.error(res.data.message || "Failed to fetch case details");
         }
@@ -29,6 +31,45 @@ const CaseDetails = () => {
     };
     fetchCaseDetails();
   }, [id]);
+
+  const checkBookmark = async () => {
+    try {
+      const res = await axios.get("/api/bookmarks", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (res.data.success) {
+        const bookmarked = res.data.data.some((bookmark) => bookmark.CaseID === parseInt(id));
+        setIsBookmarked(bookmarked);
+      }
+    } catch (error) {
+      console.error("Error checking bookmark status:", error.message);
+    }
+  };
+
+  const handleBookmark = async () => {
+    try {
+      const res = await axios.post(
+        "/api/bookmarks/add",
+        { caseId: id },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (res.data.success) {
+        message.success("Case bookmarked successfully");
+        setIsBookmarked(true);
+      } else {
+        message.error(res.data.message || "Failed to bookmark case");
+      }
+    } catch (error) {
+      console.error("Error bookmarking case:", error.message);
+      message.error("Something went wrong while bookmarking the case.");
+    }
+  };
 
   const handleOpenFile = async (caseId) => {
     if (!caseId) {
@@ -61,7 +102,7 @@ const CaseDetails = () => {
 
   return (
     <Layout>
-      <div style={{ marginBottom: "20px", textAlign: "center" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <button
           style={{
             backgroundColor: "green",
@@ -71,36 +112,62 @@ const CaseDetails = () => {
             borderRadius: "5px",
             cursor: "pointer",
           }}
-          onClick={() => navigate(-1)} // Go back to the previous page
+          onClick={() => navigate(-1)}
         >
-          Back to Search Cases
+          Go Back
+        </button>
+        <button
+          style={{
+            backgroundColor: isBookmarked ? "gray" : "green",
+            color: "white",
+            border: "none",
+            padding: "10px 20px",
+            borderRadius: "5px",
+            cursor: isBookmarked ? "not-allowed" : "pointer",
+          }}
+          onClick={isBookmarked ? null : handleBookmark}
+          disabled={isBookmarked}
+        >
+          {isBookmarked ? "Bookmarked" : "Bookmark Case"}
         </button>
       </div>
-      <h1>Case Details</h1>
-      <p><strong>Title:</strong> {caseData.TITLE}</p>
-      <p><strong>Description:</strong> {caseData.DESCRIPTION}</p>
-      <p><strong>Category:</strong> {caseData.CATEGORY}</p>
-      <p><strong>Added By:</strong> {caseData.ADDEDBY}</p>
-      <p><strong>Date Added:</strong> {caseData.DATEADDED}</p>
+      <div style={{ marginTop: "20px" }}>
+        <h1>Case Details</h1>
+        <p>
+          <strong>Title:</strong> {caseData.TITLE}
+        </p>
+        <p>
+          <strong>Description:</strong> {caseData.DESCRIPTION}
+        </p>
+        <p>
+          <strong>Category:</strong> {caseData.CATEGORY}
+        </p>
+        <p>
+          <strong>Added By:</strong> {caseData.ADDEDBY}
+        </p>
+        <p>
+          <strong>Date Added:</strong> {caseData.DATEADDED}
+        </p>
 
-      {caseData.FILEID ? (
-        <button
-          style={{
-            backgroundColor: "green",
-            color: "white",
-            border: "none",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            marginTop: "20px",
-          }}
-          onClick={() => handleOpenFile(caseData.CASEID)}
-        >
-          Open File
-        </button>
-      ) : (
-        <p>No file available for this case</p>
-      )}
+        {caseData.FILEID ? (
+          <button
+            style={{
+              backgroundColor: "green",
+              color: "white",
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              marginTop: "20px",
+            }}
+            onClick={() => handleOpenFile(caseData.CASEID)}
+          >
+            Open File
+          </button>
+        ) : (
+          <p>No file available for this case</p>
+        )}
+      </div>
     </Layout>
   );
 };

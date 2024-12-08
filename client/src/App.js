@@ -6,7 +6,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/dashboard';
 import AddCase from './pages/addCase';
 import AdminDashboard from './pages/adminDashboard';
-import Bookmark from './pages/bookmark';
+import Bookmarks from './pages/bookmark';
 import CaseDetails from './pages/caseDetails';
 import EditCase from './pages/editCase';
 import Error404 from './pages/error404';
@@ -59,14 +59,8 @@ function App() {
             />
 
             {/* User-Specific Routes */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/" element={<HomePage />} />
+
             <Route
               path="/profile"
               element={
@@ -74,20 +68,20 @@ function App() {
                   <Profile />
                 </ProtectedRoute>
               }
-              
+
             />
 
 
 
 
-            <Route
-              path="/bookmark"
-              element={
-                <ProtectedRoute>
-                  <Bookmark />
-                </ProtectedRoute>
-              }
-            />
+<Route
+  path="/view-bookmarks"
+  element={
+    <ProtectedRoute>
+      <Bookmarks />
+    </ProtectedRoute>
+  }
+/>
             <Route
               path="/case/:id"
               element={
