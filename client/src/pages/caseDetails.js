@@ -95,17 +95,24 @@ const CaseDetails = () => {
   if (!caseData) {
     return (
       <Layout>
-        <h1>Loading Case Details...</h1>
+        <h1 style={{ textAlign: "center", marginTop: "50px" }}>Loading Case Details...</h1>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
         <button
           style={{
-            backgroundColor: "green",
+            backgroundColor: "#1890ff",
             color: "white",
             border: "none",
             padding: "10px 20px",
@@ -118,7 +125,7 @@ const CaseDetails = () => {
         </button>
         <button
           style={{
-            backgroundColor: isBookmarked ? "gray" : "green",
+            backgroundColor: isBookmarked ? "gray" : "#52c41a",
             color: "white",
             border: "none",
             padding: "10px 20px",
@@ -131,8 +138,15 @@ const CaseDetails = () => {
           {isBookmarked ? "Bookmarked" : "Bookmark Case"}
         </button>
       </div>
-      <div style={{ marginTop: "20px" }}>
-        <h1>Case Details</h1>
+      <div
+        style={{
+          background: "#f9f9f9",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Case Details</h1>
         <p>
           <strong>Title:</strong> {caseData.TITLE}
         </p>
@@ -152,20 +166,25 @@ const CaseDetails = () => {
         {caseData.FILEID ? (
           <button
             style={{
-              backgroundColor: "green",
+              backgroundColor: "#52c41a",
               color: "white",
               border: "none",
               padding: "10px 20px",
               borderRadius: "5px",
               cursor: "pointer",
               marginTop: "20px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
             }}
             onClick={() => handleOpenFile(caseData.CASEID)}
           >
             Open File
           </button>
         ) : (
-          <p>No file available for this case</p>
+          <p style={{ textAlign: "center", color: "#ff4d4f" }}>
+            No file available for this case
+          </p>
         )}
       </div>
     </Layout>
