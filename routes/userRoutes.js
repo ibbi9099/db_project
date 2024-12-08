@@ -6,6 +6,8 @@ const {
     LawyersController,
 
 } = require("../controllers/userCtrl");
+const { getUserProfile, updateProfile  } = require("../controllers/profileController");
+
 const authMiddleware = require("../middlewares/authMiddleware");
 
 //router object
@@ -24,6 +26,8 @@ router.post("/getUserData", authMiddleware, authController)
 
 // Route to fetch all registered lawyers
 router.get("/lawyers", LawyersController);
+router.get("/profile", authMiddleware, getUserProfile);
+router.put("/profile", authMiddleware, updateProfile);
 
     
 module.exports = router;

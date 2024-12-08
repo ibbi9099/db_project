@@ -140,6 +140,32 @@ const LawyersController = async (req, res) => {
             message: `Error fetching lawyers: ${error.message}`,
         });
     }
+
+    const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await userModel.getUserById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        name: user.NAME,
+        email: user.EMAIL,
+        userType: user.USER_TYPE,
+        educationalInstitute: user.EDUCATIONALINSTITUTE || null,
+        specialization: user.SPECIALIZATION || null,
+        experienceYears: user.EXPERIENCEYEARS || null,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching user profile:', error.message);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
 };
 
 module.exports = { loginController, registerController, authController, LawyersController };

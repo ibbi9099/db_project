@@ -37,9 +37,12 @@ const Layout = ({ children }) => {
 
   if (!SidebarMenu.length) {
     return (
-      <div>
-        Invalid user type. Please log out and log in again.
-        <button onClick={handleLogout}>Logout</button>
+      <div className="error-container">
+        <h2>Invalid user type</h2>
+        <p>Please log out and log in again.</p>
+        <button onClick={handleLogout} className="btn-logout">
+          Logout
+        </button>
       </div>
     );
   }
@@ -63,21 +66,13 @@ const Layout = ({ children }) => {
             );
           })}
 
-          {/* Add "My Cases" Button for Lawyers */}
-          {user?.userType === "Lawyer" && (
-  <>
-    {/* <div className="menu-item">
-      <i className="fa-solid fa-folder-open"></i>
-      <Link to="/my-cases">My Cases</Link>
-    </div> */}
-    {/* <div className="menu-item">
-      <i className="fa-solid fa-plus"></i>
-      <Link to="/add-case">Add Case</Link>
-    </div> */}
-  </>
-)}
+          {/* Profile Link
+          <div className={`menu-item ${location.pathname === "/profile" && "active"}`}>
+            <i className="fa-solid fa-user"></i>
+            <Link to="/profile">Profile</Link>
+          </div> */}
 
-
+          {/* Logout Button */}
           <div className="menu-item" onClick={handleLogout}>
             <i className="fa-solid fa-right-from-bracket"></i>
             Logout
@@ -87,12 +82,7 @@ const Layout = ({ children }) => {
 
       {/* Content Area */}
       <main className="content">
-        {/* Header */}
         <header className="header">
-          <div className="header-content">
-            <i className="fa-solid fa-bell"></i>
-            <Link to="/profile">{user?.name || "Profile"}</Link>
-          </div>
           <h3>
             {user?.userType === "LawStudent"
               ? "Student Dashboard"
@@ -104,7 +94,6 @@ const Layout = ({ children }) => {
           </h3>
         </header>
 
-        {/* Main Body */}
         <section className="body">{children}</section>
       </main>
     </div>

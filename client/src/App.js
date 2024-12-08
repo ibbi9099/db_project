@@ -17,6 +17,8 @@ import ProtectedRoute from './components/ProtectedRoutes';
 import PublicRoute from './components/PublicRoutes';
 import RequestCase from './pages/requestCase';
 import MyCases from './pages/MyCases'; // Import MyCases component
+import Profile from "./pages/Profile";
+
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
@@ -65,6 +67,19 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+              
+            />
+
+
+
+
             <Route
               path="/bookmark"
               element={

@@ -61,6 +61,12 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
+const profileRoutes = require("./routes/profileRoutes");
+app.use("/api/profile", profileRoutes);
+
+
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
